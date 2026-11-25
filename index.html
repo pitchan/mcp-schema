@@ -29,7 +29,7 @@ h1{font-size:24px;line-height:1.25;margin:0 0 8px;font-weight:600;text-wrap:bala
 .tb button[aria-pressed=true]{background:var(--accent-bg);border-color:var(--accent-border);color:var(--accent-text);font-weight:600}
 .tb button:focus-visible{outline:2px solid var(--accent-border);outline-offset:2px}
 .lg{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--text2);margin-bottom:14px}
-.lg i{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.lg i,.sw{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:6px;vertical-align:-1px}
 .row{margin-bottom:14px}
 .rl{display:flex;justify-content:space-between;font-size:14px;margin-bottom:4px}
 .rl b{font-weight:600}
@@ -44,15 +44,8 @@ h1{font-size:24px;line-height:1.25;margin:0 0 8px;font-weight:600;text-wrap:bala
 .note{font-size:15px;line-height:1.55;margin-top:6px;color:var(--text2)}
 .fine{font-size:13px;color:var(--muted);margin-top:12px}
 h2{font-size:18px;margin:28px 0 10px;font-weight:600}
-.cmp{width:100%;border-collapse:collapse;font-size:15px}
-.cmp th,.cmp td{padding:8px 6px;text-align:right;border-bottom:1px solid var(--border);font-variant-numeric:tabular-nums}
-.cmp th:first-child,.cmp td:first-child{text-align:left;padding-left:0}
-.cmp th:last-child,.cmp td:last-child{padding-right:0}
-.cmp th{font-weight:500;font-size:13px;color:var(--text2)}
-.cmp tr.on td{font-weight:600;color:var(--accent-text)}
-.cmp + .note{margin-top:12px}
-ul{margin:0;padding-left:20px}
-li{margin-bottom:8px}
+.two{list-style:none;margin:0;padding:0}
+.two li{margin-bottom:8px}
 .key{margin:14px 0 0;font-weight:600}
 .src{font-size:13px;color:var(--muted);margin-top:28px}
 .src a{color:var(--accent-text)}
@@ -78,29 +71,14 @@ li{margin-bottom:8px}
 <div class="fine">Ordres de grandeur illustratifs, exprimés en pages pour rester parlants.</div>
 </div>
 
-<h2>Pages lues ≠ facture</h2>
-<div class="card">
-<table class="cmp">
-<thead><tr><th scope="col">Approche</th><th scope="col">Pages lues</th><th scope="col">Coût réel*</th></tr></thead>
-<tbody>
-<tr data-k="a"><td>MCP classique</td><td>293</td><td>≈ 300</td></tr>
-<tr data-k="b"><td>Tool search</td><td>115</td><td>≈ 235</td></tr>
-<tr data-k="c"><td>Code Mode</td><td>13</td><td>≈ 8</td></tr>
-</tbody>
-</table>
-<div class="note">Le cache rend les relectures presque gratuites, mais ce que l'IA écrit coûte 5 fois plus cher que ce qu'elle lit. Les 30 pages recopiées pèsent donc autant que 150 pages lues.</div>
-<div class="fine">* En équivalent pages lues, cache actif, aux tarifs Claude de novembre 2026.</div>
-</div>
-
-<h2>Ce qu'il faut retenir</h2>
-<ul>
-<li><b>MCP classique</b> : chaque aller-retour fait relire tout ce qui précède, et le document est lu, recopié, puis relu.</li>
-<li><b>Tool search (Anthropic)</b> : moins de modes d'emploi à relire, mais le document passe toujours par l'IA. La facture ne baisse que d'environ 20 %.</li>
-<li><b>Code Mode (Cloudflare, Anthropic)</b> : l'IA écrit une recette et les outils se passent le document sans elle. La facture baisse de plus de 95 %.</li>
+<h2>Ce qu'il faut retenir : deux gaspillages</h2>
+<ul class="two">
+<li><i class="sw m"></i><b>Les modes d'emploi des outils</b> : relus à chaque aller-retour.</li>
+<li><i class="sw d"></i><b>Le document</b> : lu, recopié, puis relu par l'IA.</li>
 </ul>
-<p class="key">Le vrai gaspillage, c'est le document qui transite par l'IA, plus que les modes d'emploi.</p>
+<p class="key">Le tool search (Anthropic) traite le premier. Code Mode (Cloudflare) traite les deux.</p>
 
-<p class="src">Sources : <a href="https://www.anthropic.com/engineering/code-execution-with-mcp">Anthropic, exécution de code avec MCP</a> · <a href="https://www.anthropic.com/engineering/advanced-tool-use">Anthropic, tool search</a> · <a href="https://blog.cloudflare.com/code-mode/">Cloudflare, Code Mode</a> · <a href="https://platform.claude.com/docs/en/about-claude/pricing">tarifs Claude</a></p>
+<p class="src">Sources : <a href="https://www.anthropic.com/engineering/code-execution-with-mcp">Anthropic, exécution de code avec MCP</a> · <a href="https://www.anthropic.com/engineering/advanced-tool-use">Anthropic, tool search</a> · <a href="https://blog.cloudflare.com/code-mode/">Cloudflare, Code Mode</a></p>
 </main>
 <script>
 const D={
@@ -123,15 +101,14 @@ c:{rows:[
 [5,1,"Elle répond : « c'est fait »"]],
 note:"La recette est exécutée à côté, sans l'IA. Les 3 actions se font en un seul aller-retour et le document de 30 pages ne passe jamais devant elle : elle ne reçoit que « c'est fait »."}
 };
-const MAX=111,R=document.getElementById('rows'),T=document.getElementById('tot'),N=document.getElementById('note'),B=[...document.querySelectorAll('.tb button')],C=[...document.querySelectorAll('.cmp tbody tr')];
+const MAX=111,R=document.getElementById('rows'),T=document.getElementById('tot'),N=document.getElementById('note'),B=[...document.querySelectorAll('.tb button')];
 function show(k){const x=D[k];let t=0,h='';
 x.rows.forEach((r,i)=>{const s=r[0]+r[1];t+=s;
 h+='<div class="row"><div class="rl"><b>Lecture '+(i+1)+'</b><span>'+s+' pages</span></div><div class="bar"><i class="m" style="width:'+(r[0]/MAX*100)+'%"></i>'+(r[1]?'<i class="d" style="width:'+(r[1]/MAX*100)+'%"></i>':'')+'</div><div class="dec">'+r[2]+'</div></div>';});
 R.innerHTML=h;
 T.innerHTML='<b>'+x.rows.length+' lectures, '+t+' pages lues</b> pour une demande d\'une ligne';
 N.textContent=x.note;
-B.forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===k?'true':'false'));
-C.forEach(r=>r.classList.toggle('on',r.dataset.k===k));}
+B.forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===k?'true':'false'));}
 B.forEach(b=>b.onclick=()=>show(b.dataset.k));
 show('a');
 </script>
