@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MCP : pourquoi les allers-retours coûtent cher</title>
+<style>
+:root{
+  --bg:#faf9f5;--card:#ffffff;--text:#1f1e1d;--text2:#5e5d59;--muted:#87867f;
+  --border:#e3e1d9;--border-strong:#c9c6bb;
+  --accent-bg:#e8eefc;--accent-border:#8aa4e8;--accent-text:#1d3f9c;
+  --m:#d9534a;--d:#e0a030;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#1a1a19;--card:#232321;--text:#f3f2ee;--text2:#b9b7ae;--muted:#8b897f;
+  --border:#3a3936;--border-strong:#55534e;
+  --accent-bg:#1f2c4d;--accent-border:#4f6fc4;--accent-text:#b8caff;
+  --m:#c9483f;--d:#d2932a;
+}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:720px;margin:0 auto;padding:24px 16px 48px}
+h1{font-size:24px;line-height:1.25;margin:0 0 8px;font-weight:600;text-wrap:balance}
+.lead{color:var(--text2);margin:0 0 20px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px}
+.q{font-size:15px;border:1px solid var(--border);border-radius:12px;padding:10px 12px;margin-bottom:12px}
+.tb{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.tb button{font:inherit;font-size:14px;padding:8px 12px;border-radius:10px;border:1px solid var(--border-strong);background:transparent;color:var(--text);cursor:pointer}
+.tb button[aria-pressed=true]{background:var(--accent-bg);border-color:var(--accent-border);color:var(--accent-text);font-weight:600}
+.tb button:focus-visible{outline:2px solid var(--accent-border);outline-offset:2px}
+.lg{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--text2);margin-bottom:14px}
+.lg i{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.row{margin-bottom:14px}
+.rl{display:flex;justify-content:space-between;font-size:14px;margin-bottom:4px}
+.rl b{font-weight:600}
+.rl span{font-variant-numeric:tabular-nums}
+.bar{display:flex;height:20px;border-radius:4px;overflow:hidden}
+.bar i{display:block;height:100%;transition:width .35s ease}
+.m{background:var(--m)}
+.d{background:var(--d)}
+.dec{font-size:14px;color:var(--text2);margin-top:4px}
+.tot{border-top:1px solid var(--border);padding-top:12px;font-size:17px}
+.tot b{font-weight:600}
+.note{font-size:15px;line-height:1.55;margin-top:6px;color:var(--text2)}
+.fine{font-size:13px;color:var(--muted);margin-top:12px}
+h2{font-size:18px;margin:28px 0 10px;font-weight:600}
+ul{margin:0;padding-left:20px}
+li{margin-bottom:8px}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+</style>
+</head>
+<body>
+<main>
+<h1>MCP : pourquoi les allers-retours coûtent cher</h1>
+<p class="lead">Une même demande, trois façons de brancher les outils. À chaque aller-retour, l'IA relit tout depuis le début, et chaque lecture est facturée.</p>
+
+<div class="card">
+<div class="q">Demande : « Ajoute le compte-rendu de réunion (30 pages) au ticket Jira »</div>
+<div class="tb">
+<button data-k="a" aria-pressed="true">MCP classique</button>
+<button data-k="b" aria-pressed="false">Avec tool search</button>
+<button data-k="c" aria-pressed="false">Avec Code Mode</button>
+</div>
+<div class="lg"><span><i class="m"></i>Modes d'emploi des outils</span><span><i class="d"></i>Documents et résultats</span></div>
+<div id="rows" aria-live="polite"></div>
+<div class="tot" id="tot"></div>
+<div class="note" id="note"></div>
+<div class="fine">Ordres de grandeur illustratifs, exprimés en pages pour rester parlants. On compte ce que l'IA lit ; ce qu'elle écrit (par exemple les 30 pages recopiées) est facturé en plus. Le cache réduit le prix des relectures à l'identique, sans supprimer ni la relecture ni les allers-retours.</div>
+</div>
+
+<h2>Ce qu'il faut retenir</h2>
+<ul>
+<li><b>MCP classique</b> : le problème vient de la relecture. Chaque aller-retour fait relire tout ce qui précède, donc la facture grossit à chaque étape.</li>
+<li><b>Tool search (Anthropic)</b> : on réduit ce qui est relu à chaque fois. Le nombre d'allers-retours ne baisse pas.</li>
+<li><b>Code Mode (Cloudflare)</b> : on réduit le nombre d'allers-retours eux-mêmes, et le document ne passe plus par l'IA.</li>
+</ul>
+</main>
+<script>
+const D={
+a:{rows:[
+[50,0,"Elle demande : « cherche le compte-rendu dans Drive »"],
+[50,1,"Elle demande : « ouvre ce document »"],
+[50,31,"Elle demande : « écris-le dans Jira », en recopiant les 30 pages"],
+[50,61,"Elle répond : « c'est fait »"]],
+note:"3 actions = 4 lectures. Les 50 pages de modes d'emploi sont relues 4 fois. Le document est lu, recopié, puis relu."},
+b:{rows:[
+[2,0,"Elle demande : « quels outils pour Drive et Jira ? »"],
+[5,0,"Elle demande : « cherche le compte-rendu dans Drive »"],
+[5,1,"Elle demande : « ouvre ce document »"],
+[5,31,"Elle demande : « écris-le dans Jira », en recopiant les 30 pages"],
+[5,61,"Elle répond : « c'est fait »"]],
+note:"Les 50 pages sont remplacées par un sommaire de 2 pages, plus les 3 pages vraiment utiles. Un aller-retour de plus, mais beaucoup moins à relire. Le document, lui, passe toujours par l'IA."},
+c:{rows:[
+[2,0,"Elle demande : « comment faire avec Drive et Jira ? »"],
+[5,0,"Elle écrit une recette : « prends le compte-rendu dans Drive et mets-le dans Jira »"],
+[5,1,"Elle répond : « c'est fait »"]],
+note:"La recette est exécutée à côté, sans l'IA. Les 3 actions se font en un seul aller-retour et le document de 30 pages ne passe jamais devant elle : elle ne reçoit que « c'est fait »."}
+};
+const MAX=111,R=document.getElementById('rows'),T=document.getElementById('tot'),N=document.getElementById('note'),B=[...document.querySelectorAll('.tb button')];
+function show(k){const x=D[k];let t=0,h='';
+x.rows.forEach((r,i)=>{const s=r[0]+r[1];t+=s;
+h+='<div class="row"><div class="rl"><b>Lecture '+(i+1)+'</b><span>'+s+' pages</span></div><div class="bar"><i class="m" style="width:'+(r[0]/MAX*100)+'%"></i>'+(r[1]?'<i class="d" style="width:'+(r[1]/MAX*100)+'%"></i>':'')+'</div><div class="dec">'+r[2]+'</div></div>';});
+R.innerHTML=h;
+T.innerHTML='<b>'+x.rows.length+' lectures, '+t+' pages lues</b> pour une demande d\'une ligne';
+N.textContent=x.note;
+B.forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===k?'true':'false'));}
+B.forEach(b=>b.onclick=()=>show(b.dataset.k));
+show('a');
+</script>
+</body>
+</html>
